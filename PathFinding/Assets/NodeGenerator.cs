@@ -6,8 +6,8 @@ public class NodeGenerator : MonoBehaviour {
 
     public Vector2Int worldSize;
     [Range(0.01f, 10.0f)] public float density;
+    [SerializeField] private bool drawGizmos;
     [HideInInspector] public List<Node> nodes;
-
     void Start () {
     }
 
@@ -27,6 +27,19 @@ public class NodeGenerator : MonoBehaviour {
             }
         }
 
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (drawGizmos)
+        {
+            foreach (Node node in nodes)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(new Vector3((float)node.Position.x,(float)node.Position.y, 0.0f), 0.1f);
+            }
+        }
 
     }
 
