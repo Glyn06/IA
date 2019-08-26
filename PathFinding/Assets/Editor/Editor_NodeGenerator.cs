@@ -33,7 +33,8 @@ public class Editor_NodeGenerator : Editor {
         }
 
         base.OnInspectorGUI();
-
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Nodes Count = " + nodeGenerator.nodes.Count.ToString());
         toggle = EditorGUILayout.BeginToggleGroup("Nodes list", toggle);
 
         if (toggle)

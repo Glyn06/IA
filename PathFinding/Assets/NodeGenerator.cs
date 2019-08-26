@@ -9,18 +9,41 @@ public class NodeGenerator : MonoBehaviour
     [Range(1, 4)] public int density;
     [SerializeField] private bool drawGizmos;
     [HideInInspector] public List<Node> nodes;
+    [SerializeField] [HideInInspector] private List<Collider2D> obstacleColliders;
 
+    private void Update()
+    {
+        foreach (Node node in nodes)
+        {
+            node.IsObstacle = false;
+            foreach (Collider2D col2D in obstacleColliders)
+            {
+                if (col2D.OverlapPoint(node.Position))
+                {
+                    node.IsObstacle = true;
+                }
+            }
+        }
+    }
     public void GenerateNodes()
     {
         nodes = new List<Node>();
         GameObject[] gos = GetAllObjectsInScene().ToArray();
-        List<Collider2D> colliders = new List<Collider2D>();
+        List<Collider2D> staticColliders = new List<Collider2D>();
+        obstacleColliders = new List<Collider2D>();
 
         for (int i = 0; i < gos.Length; i++)
         {
-            if (gos[i].GetComponent<Collider2D>() != null && gos[i].layer == LayerMask.NameToLayer("Static"))
+            if (gos[i].GetComponent<Collider2D>() != null)
             {
-                colliders.Add(gos[i].GetComponent<Collider2D>());
+                if (gos[i].layer == LayerMask.NameToLayer("Static"))
+                {
+                    staticColliders.Add(gos[i].GetComponent<Collider2D>());
+                }
+                if (gos[i].layer == LayerMask.NameToLayer("Obstacle"))
+                {
+                    obstacleColliders.Add(gos[i].GetComponent<Collider2D>());
+                }
             }
         }
 
@@ -29,7 +52,7 @@ public class NodeGenerator : MonoBehaviour
             for (int j = 0; j < worldSize.y * density; j++)
             {
                 bool insideCollider = false;
-                foreach (Collider2D col2D in colliders)
+                foreach (Collider2D col2D in staticColliders)
                 {
                     if (col2D.OverlapPoint(new Vector2(((float)i / (float)density), ((float)j / (float)density))))
                     {
@@ -43,16 +66,33 @@ public class NodeGenerator : MonoBehaviour
             }
         }
 
+        foreach (Node node in nodes)
+        {
+            foreach (Collider2D col2D in obstacleColliders)
+            {
+                if (col2D.OverlapPoint(node.Position))
+                {
+                    node.IsObstacle = true;
+                }
+            }
+        }
+
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-
         if (drawGizmos)
         {
             foreach (Node node in nodes)
             {
+                if (node.IsObstacle)
+                {
+                    Gizmos.color = Color.red;
+                }
+                else
+                {
+                    Gizmos.color = Color.blue;
+                }
                 Gizmos.DrawSphere(new Vector3((float)node.Position.x,(float)node.Position.y, 0.0f), 0.1f);
             }
         }
