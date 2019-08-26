@@ -34,7 +34,10 @@ public class Editor_NodeGenerator : Editor {
 
         base.OnInspectorGUI();
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Nodes Count = " + nodeGenerator.nodes.Count.ToString());
+        if (nodeGenerator.nodes != null)
+        {
+            EditorGUILayout.LabelField("Nodes Count = " + nodeGenerator.nodes.Count.ToString());
+        }
         toggle = EditorGUILayout.BeginToggleGroup("Nodes list", toggle);
 
         if (toggle)
@@ -47,6 +50,7 @@ public class Editor_NodeGenerator : Editor {
                 n.NodeState = (Node.NodeStates)EditorGUILayout.Popup("State", (int)n.NodeState, nodeStates);
                 n.Position = EditorGUILayout.Vector2Field("Position", n.Position);
                 n.IsObstacle = EditorGUILayout.Toggle("Is Obstacle", n.IsObstacle);
+                EditorGUILayout.LabelField("Conections: " + n.Adjacents.Count.ToString());
                 i++;
             }
             EditorGUILayout.EndVertical();

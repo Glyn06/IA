@@ -4,12 +4,23 @@ using UnityEngine;
 using UnityEditor;
 public class NodeGenerator : MonoBehaviour
 {
+    [System.Serializable]
+    public struct ConectionColors
+    {
+        public Color obstacleNodeColor;
+        public Color oneConectionNodeColor;
+        public Color twoConectionNodeColor;
+        public Color threeConectionNodeColor;
+        public Color fourConectionNodeColor;
+    }
 
     public Vector2Int worldSize;
     [Range(1, 4)] public int density;
     [SerializeField] private bool drawGizmos;
     [HideInInspector] public List<Node> nodes;
     [SerializeField] [HideInInspector] private List<Collider2D> obstacleColliders;
+    public ConectionColors nodeColors;
+
 
     private void Update()
     {
@@ -80,36 +91,74 @@ public class NodeGenerator : MonoBehaviour
             }
         }
 
+        Vector2 rightDistance = new Vector2(((float)(1.0f / (float)density)), 0.0f);
+        Vector2 upDistance = new Vector2(0.0f,((float)(1.0f / (float)density)));
+
+
+        foreach (Node currentNode in nodes)
+        {
+            foreach (Node node in nodes)
+            {
+                if (currentNode.Position + upDistance == node.Position)
+                {
+                    node.AddConection(currentNode);
+                    currentNode.AddConection(node);
+                }
+
+                if (currentNode.Position + rightDistance == node.Position)
+                {
+                    node.AddConection(currentNode);
+                    currentNode.AddConection(node);
+                }
+            }
+        }
     }
 
     private void OnDrawGizmos()
     {
-
-        foreach (Node node in nodes)
-        {
-            node.IsObstacle = false;
-            foreach (Collider2D col2D in obstacleColliders)
-            {
-                if (col2D.OverlapPoint(node.Position))
-                {
-                    node.IsObstacle = true;
-                }
-            }
-        }
-
-        if (drawGizmos)
+        if (nodes != null)
         {
             foreach (Node node in nodes)
             {
-                if (node.IsObstacle)
+                node.IsObstacle = false;
+                foreach (Collider2D col2D in obstacleColliders)
                 {
-                    Gizmos.color = Color.red;
+                    if (col2D.OverlapPoint(node.Position))
+                    {
+                        node.IsObstacle = true;
+                    }
                 }
-                else
+            }
+
+            if (drawGizmos)
+            {
+                foreach (Node node in nodes)
                 {
-                    Gizmos.color = Color.blue;
+                    if (node.IsObstacle)
+                    {
+                        Gizmos.color = nodeColors.obstacleNodeColor;
+                    }
+                    else
+                    {
+                        switch(node.Adjacents.Count)
+                        {
+                            case 1:
+                                Gizmos.color = nodeColors.oneConectionNodeColor;
+                                break;
+                            case 2:
+                                Gizmos.color = nodeColors.twoConectionNodeColor;
+                                break;
+                            case 3:
+                                Gizmos.color = nodeColors.threeConectionNodeColor;
+                                break;
+                            case 4:
+                                Gizmos.color = nodeColors.fourConectionNodeColor;
+                                break;
+                        }
+
+                    }
+                    Gizmos.DrawSphere(new Vector3((float)node.Position.x, (float)node.Position.y, 0.0f), 0.1f);
                 }
-                Gizmos.DrawSphere(new Vector3((float)node.Position.x,(float)node.Position.y, 0.0f), 0.1f);
             }
         }
     }
@@ -131,9 +180,11 @@ public class NodeGenerator : MonoBehaviour
         return objectsInScene;
     }
 
-
     public void ClearNodes()
     {
-        nodes.Clear();
+        if (nodes != null)
+        {
+            nodes.Clear();
+        }
     }
 }

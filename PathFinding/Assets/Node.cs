@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
 public class Node
 {
-    private List<Node> adjacents;
+    [SerializeField] private List<Node> adjacents;
     [SerializeField] private Vector2 position;
     [SerializeField] private NodeStates nodeState;
     [SerializeField] private bool isObstacle;
     
+    public List<Node> Adjacents
+    {
+        get { return adjacents; }
+    }
+
     public NodeStates NodeState
     {
         get { return nodeState;  }
@@ -46,5 +50,14 @@ public class Node
     public NodeStates GetState()
     {
         return nodeState;
+    }
+
+    public void AddConection(Node node)
+    {
+        if (adjacents == null)
+        {
+            adjacents = new List<Node>();
+        }
+        adjacents.Add(node);
     }
 }
