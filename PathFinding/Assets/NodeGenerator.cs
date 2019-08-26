@@ -13,14 +13,17 @@ public class NodeGenerator : MonoBehaviour
 
     private void Update()
     {
-        foreach (Node node in nodes)
+        if (!drawGizmos)
         {
-            node.IsObstacle = false;
-            foreach (Collider2D col2D in obstacleColliders)
+            foreach (Node node in nodes)
             {
-                if (col2D.OverlapPoint(node.Position))
+                node.IsObstacle = false;
+                foreach (Collider2D col2D in obstacleColliders)
                 {
-                    node.IsObstacle = true;
+                    if (col2D.OverlapPoint(node.Position))
+                    {
+                        node.IsObstacle = true;
+                    }
                 }
             }
         }
@@ -81,6 +84,19 @@ public class NodeGenerator : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+
+        foreach (Node node in nodes)
+        {
+            node.IsObstacle = false;
+            foreach (Collider2D col2D in obstacleColliders)
+            {
+                if (col2D.OverlapPoint(node.Position))
+                {
+                    node.IsObstacle = true;
+                }
+            }
+        }
+
         if (drawGizmos)
         {
             foreach (Node node in nodes)
