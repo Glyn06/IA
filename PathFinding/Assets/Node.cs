@@ -6,7 +6,7 @@ using UnityEngine;
 public class Node
 {
     private List<Node> adjacents;
-    [SerializeField] private Vector2Int position;
+    [SerializeField] private Vector2 position;
     [SerializeField] private NodeStates nodeState;
     [SerializeField] private bool isObstacle;
     
@@ -16,7 +16,7 @@ public class Node
         set { nodeState = value; }
     }
 
-    public Vector2Int Position
+    public Vector2 Position
     {
         get { return position; }
         set { position = value; }
@@ -36,7 +36,7 @@ public class Node
         [HideInInspector]_count
     }
 
-    public Node(Vector2Int _position, NodeStates _state, bool _isObstacle)
+    public Node(Vector2 _position, NodeStates _state, bool _isObstacle)
     {
         isObstacle = _isObstacle;
         position = _position;

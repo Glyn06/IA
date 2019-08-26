@@ -44,7 +44,7 @@ public class Editor_NodeGenerator : Editor {
             {
                 EditorGUILayout.LabelField("Node[" +i.ToString()+ "] " + "Data", style, GUILayout.Height(50) , GUILayout.ExpandWidth(true));
                 n.NodeState = (Node.NodeStates)EditorGUILayout.Popup("State", (int)n.NodeState, nodeStates);
-                n.Position = EditorGUILayout.Vector2IntField("Position", n.Position);
+                n.Position = EditorGUILayout.Vector2Field("Position", n.Position);
                 n.IsObstacle = EditorGUILayout.Toggle("Is Obstacle", n.IsObstacle);
                 i++;
             }
