@@ -23,7 +23,7 @@ public class NodeGenerator : MonoBehaviour
     public ConectionColors nodeColors;
 
     private const string staticLayer = "Static";
-    private const string obstacleLayer = "Obstalce";
+    private const string obstacleLayer = "Obstacle";
 
 
     private void Update()
