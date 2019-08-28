@@ -11,7 +11,14 @@ public class Node
     
     public List<Node> Adjacents
     {
-        get { return adjacents; }
+        get {
+
+            if (adjacents == null)
+            {
+                adjacents = new List<Node>();
+            }
+
+            return adjacents; }
     }
 
     public NodeStates NodeState

@@ -8,6 +8,7 @@ public class NodeGenerator : MonoBehaviour
     public struct ConectionColors
     {
         public Color obstacleNodeColor;
+        public Color zeroConectionNodeColor;
         public Color oneConectionNodeColor;
         public Color twoConectionNodeColor;
         public Color threeConectionNodeColor;
@@ -20,6 +21,9 @@ public class NodeGenerator : MonoBehaviour
     [HideInInspector] public List<Node> nodes;
     [SerializeField] [HideInInspector] private List<Collider2D> obstacleColliders;
     public ConectionColors nodeColors;
+
+    private const string staticLayer = "Static";
+    private const string obstacleLayer = "Obstalce";
 
 
     private void Update()
@@ -50,11 +54,11 @@ public class NodeGenerator : MonoBehaviour
         {
             if (gos[i].GetComponent<Collider2D>() != null)
             {
-                if (gos[i].layer == LayerMask.NameToLayer("Static"))
+                if (gos[i].layer == LayerMask.NameToLayer(staticLayer))
                 {
                     staticColliders.Add(gos[i].GetComponent<Collider2D>());
                 }
-                if (gos[i].layer == LayerMask.NameToLayer("Obstacle"))
+                if (gos[i].layer == LayerMask.NameToLayer(obstacleLayer))
                 {
                     obstacleColliders.Add(gos[i].GetComponent<Collider2D>());
                 }
@@ -95,20 +99,31 @@ public class NodeGenerator : MonoBehaviour
         Vector2 upDistance = new Vector2(0.0f,((float)(1.0f / (float)density)));
 
 
+        RaycastHit2D raycastHit2D;
+
         foreach (Node currentNode in nodes)
         {
             foreach (Node node in nodes)
             {
                 if (currentNode.Position + upDistance == node.Position)
                 {
-                    node.AddConection(currentNode);
-                    currentNode.AddConection(node);
+                    raycastHit2D = Physics2D.Raycast(currentNode.Position, Vector2.up, upDistance.y);
+                    if (raycastHit2D.collider == null || raycastHit2D.collider.gameObject.layer == LayerMask.NameToLayer(obstacleLayer))
+                    {
+                        node.AddConection(currentNode);
+                        currentNode.AddConection(node);
+                    }
+                
                 }
 
                 if (currentNode.Position + rightDistance == node.Position)
                 {
-                    node.AddConection(currentNode);
-                    currentNode.AddConection(node);
+                    raycastHit2D = Physics2D.Raycast(currentNode.Position, Vector2.right, rightDistance.x);
+                    if (raycastHit2D.collider == null || raycastHit2D.collider.gameObject.layer == LayerMask.NameToLayer(obstacleLayer))
+                    {
+                        node.AddConection(currentNode);
+                        currentNode.AddConection(node);
+                    }
                 }
             }
         }
@@ -142,6 +157,9 @@ public class NodeGenerator : MonoBehaviour
                     {
                         switch(node.Adjacents.Count)
                         {
+                            case 0:
+                                Gizmos.color = nodeColors.zeroConectionNodeColor;
+                                break;
                             case 1:
                                 Gizmos.color = nodeColors.oneConectionNodeColor;
                                 break;
@@ -157,10 +175,12 @@ public class NodeGenerator : MonoBehaviour
                         }
 
                     }
-                    Gizmos.DrawSphere(new Vector3((float)node.Position.x, (float)node.Position.y, 0.0f), 0.1f);
+                    Gizmos.DrawWireSphere(new Vector3((float)node.Position.x, (float)node.Position.y, 0.0f), 0.1f);
                 }
             }
         }
+
+
     }
 
     private List<GameObject> GetAllObjectsInScene()
