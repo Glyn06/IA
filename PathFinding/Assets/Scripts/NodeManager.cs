@@ -21,7 +21,7 @@ public class NodeManager : MonoBehaviour
     public Vector2Int worldSize;
     [Range(1, 4)] public int density;
     [SerializeField] private bool drawGizmos;
-    [HideInInspector] public List<Node> nodes;
+    [HideInInspector] [SerializeField] public List<Node> nodes;
     [SerializeField] [HideInInspector] private List<Collider2D> obstacleColliders;
     public ConectionColors nodeColors;
 
