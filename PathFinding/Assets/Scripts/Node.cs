@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Node
 {
     [SerializeField] private List<Node> adjacents;
     [SerializeField] private Vector2 position;
     [SerializeField] private NodeStates nodeState;
     [SerializeField] private bool isObstacle;
-    
+    [SerializeField] private Node parentNode;
+    [SerializeField] private bool used;
     public List<Node> Adjacents
     {
         get {
@@ -25,6 +25,12 @@ public class Node
     {
         get { return nodeState;  }
         set { nodeState = value; }
+    }
+
+    public Node ParentNode
+    {
+        get { return parentNode; }
+        set { parentNode = value; }
     }
 
     public Vector2 Position
@@ -52,6 +58,7 @@ public class Node
         isObstacle = _isObstacle;
         position = _position;
         nodeState = _state;
+        used = false;
     }
 
     public NodeStates GetState()
@@ -66,5 +73,26 @@ public class Node
             adjacents = new List<Node>();
         }
         adjacents.Add(node);
+    }
+
+    public void OpenNode()
+    {
+        if (!IsObstacle && !used)
+            nodeState = NodeStates.Open;
+    }
+
+    public void OpenNode(Node n)
+    {
+        if (!IsObstacle && !used)
+        {
+            parentNode = n;
+            nodeState = NodeStates.Open;
+        }
+    }
+
+    public void CloseNode() 
+    {
+        nodeState = NodeStates.Close;
+        used = true;
     }
 }
