@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEditor;
 public class NodeGenerator : MonoBehaviour
 {
+
+    public static NodeGenerator instance;
+
     [System.Serializable]
     public struct ConectionColors
     {
@@ -25,7 +28,10 @@ public class NodeGenerator : MonoBehaviour
     private const string staticLayer = "Static";
     private const string obstacleLayer = "Obstacle";
 
-
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Update()
     {
         if (!drawGizmos)
@@ -147,6 +153,7 @@ public class NodeGenerator : MonoBehaviour
 
             if (drawGizmos)
             {
+                int i = 0;
                 foreach (Node node in nodes)
                 {
                     if (node.IsObstacle)
@@ -176,11 +183,13 @@ public class NodeGenerator : MonoBehaviour
 
                     }
                     Gizmos.DrawWireSphere(new Vector3((float)node.Position.x, (float)node.Position.y, 0.0f), 0.1f);
+
+                    Handles.Label(node.Position, i.ToString());
+                    i++;
+
                 }
             }
         }
-
-
     }
 
     private List<GameObject> GetAllObjectsInScene()
@@ -207,4 +216,21 @@ public class NodeGenerator : MonoBehaviour
             nodes.Clear();
         }
     }
+
+    public Node PositionToNode(Vector2 objectPosition)
+    {
+        float distance = float.PositiveInfinity;
+        Node currentNode = null;
+        for (int i = 0; i < nodes.Capacity; i++)
+        {
+            float currentDistance = Vector2.Distance(nodes[i].Position, objectPosition);
+            if (currentDistance < distance)
+            {
+                currentNode = nodes[i];
+                distance = currentDistance;
+            }
+        }
+        return currentNode;
+    }
+
 }
