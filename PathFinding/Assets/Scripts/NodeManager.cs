@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-public class NodeGenerator : MonoBehaviour
+public class NodeManager : MonoBehaviour
 {
 
-    public static NodeGenerator instance;
+    public static NodeManager instance;
 
     [System.Serializable]
     public struct ConectionColors
@@ -31,7 +31,14 @@ public class NodeGenerator : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        GenerateNodes();
     }
+
+    private void Start()
+    {
+    }
+
+
     private void Update()
     {
         if (!drawGizmos)
@@ -133,6 +140,9 @@ public class NodeGenerator : MonoBehaviour
                 }
             }
         }
+
+
+
     }
 
     private void OnDrawGizmos()
@@ -221,16 +231,42 @@ public class NodeGenerator : MonoBehaviour
     {
         float distance = float.PositiveInfinity;
         Node currentNode = null;
-        for (int i = 0; i < nodes.Capacity; i++)
+        for (int i = 0; i < nodes.Count; i++)
         {
-            float currentDistance = Vector2.Distance(nodes[i].Position, objectPosition);
-            if (currentDistance < distance)
+            if (!nodes[i].IsObstacle)
             {
-                currentNode = nodes[i];
-                distance = currentDistance;
+                float currentDistance = Vector2.Distance(nodes[i].Position, objectPosition);
+                if (currentDistance < distance)
+                {
+                    currentNode = nodes[i];
+                    distance = currentDistance;
+                }
             }
         }
         return currentNode;
     }
 
+    public Node GetOpenNode()
+    {
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            if (nodes[i].NodeState == Node.NodeStates.Open)
+            {
+                return nodes[i];
+            }
+        }
+        return null;
+    }
+
+    public bool HaveOpenNodes() 
+    {
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            if (nodes[i].NodeState == Node.NodeStates.Open)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
