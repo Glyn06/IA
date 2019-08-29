@@ -11,7 +11,18 @@ public class PathFinding
 
     public List<Vector2> GetPath (Vector2 startPosition, Vector2 destinationPosition)
     {
+        if (NodeManager.instance == null)
+        {
+            return new List<Vector2>();
+        }
+
         nodeGenerator = NodeManager.instance;
+
+        if (nodeGenerator.nodes == null)
+        {
+            return new List<Vector2>();
+        }
+
         startNode = nodeGenerator.PositionToNode(startPosition);
         destinationNode = nodeGenerator.PositionToNode(destinationPosition);
 
