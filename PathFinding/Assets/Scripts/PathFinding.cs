@@ -27,6 +27,7 @@ public class PathFinding
 
         Debug.Log("Start: " + startNode.Position);
         Debug.Log("Destination: " + destinationNode.Position);
+        nodeGenerator.RestartNodes();
 
         startNode.OpenNode();
         while (nodeGenerator.HaveOpenNodes())
@@ -57,7 +58,6 @@ public class PathFinding
                 n.Adjacents[i].OpenNode(n);
             }
         }
-        nodeGenerator.RestartNodes();
 
         return new List<Vector2>();
     }

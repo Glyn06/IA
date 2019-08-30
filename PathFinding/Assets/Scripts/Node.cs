@@ -102,5 +102,6 @@ public class Node
     {
         nodeState = originalState;
         used = false;
+        parentNode = null;
     }
 }
