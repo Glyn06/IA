@@ -6,9 +6,11 @@ public class Node
     [SerializeField] private List<Node> adjacents;
     [SerializeField] private Vector2 position;
     [SerializeField] private NodeStates nodeState;
+    [SerializeField] private NodeStates originalState;
     [SerializeField] private bool isObstacle;
     [SerializeField] private Node parentNode;
     [SerializeField] private bool used;
+
     public List<Node> Adjacents
     {
         get {
@@ -57,7 +59,7 @@ public class Node
     {
         isObstacle = _isObstacle;
         position = _position;
-        nodeState = _state;
+        nodeState = originalState = _state;
         used = false;
     }
 
@@ -94,5 +96,11 @@ public class Node
     {
         nodeState = NodeStates.Close;
         used = true;
+    }
+
+    public void RestartNode()
+    {
+        nodeState = originalState;
+        used = false;
     }
 }

@@ -22,7 +22,6 @@ public class PathFinding
         {
             return new List<Vector2>();
         }
-
         startNode = nodeGenerator.PositionToNode(startPosition);
         destinationNode = nodeGenerator.PositionToNode(destinationPosition);
 
@@ -58,6 +57,7 @@ public class PathFinding
                 n.Adjacents[i].OpenNode(n);
             }
         }
+        nodeGenerator.RestartNodes();
 
         return new List<Vector2>();
     }

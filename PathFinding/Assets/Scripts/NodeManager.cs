@@ -269,4 +269,12 @@ public class NodeManager : MonoBehaviour
         }
         return false;
     }
+
+    public void RestartNodes()
+    {
+        foreach (Node node in nodes)
+        {
+            node.RestartNode();
+        }
+    }
 }
