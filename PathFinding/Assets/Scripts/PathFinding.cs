@@ -6,8 +6,14 @@ public class PathFinding
     private NodeManager nodeGenerator;
     private Node startNode;
     private Node destinationNode;
+    private List<Node> openNodes;
+    private List<Node> closedNodes;
 
-    public PathFinding() { }
+    public PathFinding()
+    {
+        openNodes = new List<Node>();
+        closedNodes = new List<Node>();
+    }
 
     public List<Vector2> GetPath (Vector2 startPosition, Vector2 destinationPosition)
     {
@@ -30,9 +36,10 @@ public class PathFinding
         nodeGenerator.RestartNodes();
 
         startNode.OpenNode();
-        while (nodeGenerator.HaveOpenNodes())
+        openNodes.Add(startNode);
+        while (openNodes.Count > 0)
         {
-            Node n = nodeGenerator.GetOpenNode();
+            Node n = GetOpenNode();
             if (n == destinationNode)
             {
                 List<Node> nodePath = new List<Node>();
@@ -53,12 +60,17 @@ public class PathFinding
                 return path;
             }
             n.CloseNode();
+            openNodes.Remove(n);
+            closedNodes.Add(n);
             for (int i = 0; i < n.Adjacents.Count; i++)
             {
-                n.Adjacents[i].OpenNode(n);
+                if (n.Adjacents[i].GetState() == Node.NodeStates.Ready)
+                {
+                    n.Adjacents[i].OpenNode(n);
+                    openNodes.Add(n.Adjacents[i]);
+                }
             }
         }
-
         return new List<Vector2>();
     }
 
@@ -71,5 +83,10 @@ public class PathFinding
         }
         list.Reverse();
         return list;
+    }
+
+    private Node GetOpenNode()
+    {
+        return openNodes[0];
     }
 }

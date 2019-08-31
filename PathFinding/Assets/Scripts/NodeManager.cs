@@ -92,7 +92,7 @@ public class NodeManager : MonoBehaviour
                 }
                 if (!insideCollider)
                 {
-                    nodes.Add(new Node(new Vector2(((float)i / (float)density), ((float)j / (float)density)), Node.NodeStates.Close, false));
+                    nodes.Add(new Node(new Vector2(((float)i / (float)density), ((float)j / (float)density)), Node.NodeStates.Ready, false));
                 }
             }
         }
