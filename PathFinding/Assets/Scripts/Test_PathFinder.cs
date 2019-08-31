@@ -12,6 +12,7 @@ public class Test_PathFinder : MonoBehaviour {
 	void Start () {
         path = new List<Vector2>();
         pathFinding = new PathFinding();
+
         path = pathFinding.GetPath(transform.position, (Vector2)target.transform.position);
         Invoke("Move", 0.1f);
     }

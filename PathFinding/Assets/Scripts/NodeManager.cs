@@ -20,8 +20,9 @@ public class NodeManager : MonoBehaviour
 
     public Vector2Int worldSize;
     [Range(1, 4)] public int density;
-    [SerializeField] private bool drawGizmos;
-    [HideInInspector] [SerializeField] public List<Node> nodes;
+    [HideInInspector] public bool drawGizmos;
+    [HideInInspector] public bool drawIndex;
+    [SerializeField] [HideInInspector] public List<Node> nodes;
     [SerializeField] [HideInInspector] private List<Collider2D> obstacleColliders;
     public ConectionColors nodeColors;
 
@@ -31,7 +32,7 @@ public class NodeManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        GenerateNodes();
+        //GenerateNodes();
     }
 
     private void Start()
@@ -123,8 +124,8 @@ public class NodeManager : MonoBehaviour
                     raycastHit2D = Physics2D.Raycast(currentNode.Position, Vector2.up, upDistance.y);
                     if (raycastHit2D.collider == null || raycastHit2D.collider.gameObject.layer == LayerMask.NameToLayer(obstacleLayer))
                     {
-                        node.AddConection(currentNode);
-                        currentNode.AddConection(node);
+                        node.AddConection(currentNode,nodes);
+                        currentNode.AddConection(node,nodes);
                     }
                 
                 }
@@ -134,8 +135,8 @@ public class NodeManager : MonoBehaviour
                     raycastHit2D = Physics2D.Raycast(currentNode.Position, Vector2.right, rightDistance.x);
                     if (raycastHit2D.collider == null || raycastHit2D.collider.gameObject.layer == LayerMask.NameToLayer(obstacleLayer))
                     {
-                        node.AddConection(currentNode);
-                        currentNode.AddConection(node);
+                        node.AddConection(currentNode,nodes);
+                        currentNode.AddConection(node,nodes);
                     }
                 }
             }
@@ -193,8 +194,10 @@ public class NodeManager : MonoBehaviour
 
                     }
                     Gizmos.DrawWireSphere(new Vector3((float)node.Position.x, (float)node.Position.y, 0.0f), 0.1f);
-
-                    Handles.Label(node.Position, i.ToString());
+                    if (drawIndex)
+                    {
+                        Handles.Label(node.Position, i.ToString());
+                    }
                     i++;
 
                 }
@@ -246,35 +249,4 @@ public class NodeManager : MonoBehaviour
         return currentNode;
     }
 
-    public Node GetOpenNode()
-    {
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            if (nodes[i].NodeState == Node.NodeStates.Open)
-            {
-                return nodes[i];
-            }
-        }
-        return null;
-    }
-
-    public bool HaveOpenNodes() 
-    {
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            if (nodes[i].NodeState == Node.NodeStates.Open)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void RestartNodes()
-    {
-        foreach (Node node in nodes)
-        {
-            node.RestartNode();
-        }
-    }
 }

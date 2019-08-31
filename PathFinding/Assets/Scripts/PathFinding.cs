@@ -33,7 +33,6 @@ public class PathFinding
 
         Debug.Log("Start: " + startNode.Position);
         Debug.Log("Destination: " + destinationNode.Position);
-        nodeGenerator.RestartNodes();
 
         startNode.OpenNode();
         openNodes.Add(startNode);
@@ -45,6 +44,7 @@ public class PathFinding
                 List<Node> nodePath = new List<Node>();
                 nodePath.Add(n);
                 nodePath = GeneratePath(nodePath, n);
+
                 List<Vector2> path = new List<Vector2>();
 
                 for (int i = 0; i < nodePath.Count; i++)
@@ -55,7 +55,12 @@ public class PathFinding
                 //Un sabio de origen probablemente asiatico dejo una vez "En la programación no hay nada más definitivo que los fix temportales"
                 //Ahora en serio, aveces el path da al revez beacouse he can
                 if (path[0] == destinationNode.Position)
+                {
                     path.Reverse();
+                }
+
+                ResetNodes();
+
 
                 return path;
             }
@@ -64,16 +69,34 @@ public class PathFinding
             closedNodes.Add(n);
             for (int i = 0; i < n.Adjacents.Count; i++)
             {
-                if (n.Adjacents[i].GetState() == Node.NodeStates.Ready)
+                if (nodeGenerator.nodes[n.Adjacents[i]].GetState() == Node.NodeStates.Ready)
                 {
-                    n.Adjacents[i].OpenNode(n);
-                    openNodes.Add(n.Adjacents[i]);
+                    if (!nodeGenerator.nodes[n.Adjacents[i]].IsObstacle)
+                    {
+                        nodeGenerator.nodes[n.Adjacents[i]].OpenNode(n);
+
+                        openNodes.Add(nodeGenerator.nodes[n.Adjacents[i]]);
+                    }
                 }
             }
         }
+        ResetNodes();
+
         return new List<Vector2>();
     }
 
+    private void ResetNodes()
+    {
+        for (int i = 0; i < openNodes.Count; i++)
+        {
+            openNodes[i].RestartNode();
+        }
+
+        for (int i = 0; i < closedNodes.Count; i++)
+        {
+            closedNodes[i].RestartNode();
+        }
+    }
     private List<Node> GeneratePath(List<Node> list, Node n)
     {
         if (n.ParentNode != null)

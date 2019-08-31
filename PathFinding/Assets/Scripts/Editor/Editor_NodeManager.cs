@@ -40,6 +40,21 @@ public class Editor_NodeManager : Editor {
         {
             EditorGUILayout.LabelField("Nodes Count = " + nodeGenerator.nodes.Count.ToString());
 
+            EditorGUILayout.BeginHorizontal();
+
+            nodeGenerator.drawGizmos = EditorGUILayout.Toggle("Draw Gizmos", nodeGenerator.drawGizmos);
+            if (nodeGenerator.drawGizmos)
+            {
+                nodeGenerator.drawIndex = EditorGUILayout.Toggle("Draw Index", nodeGenerator.drawIndex);
+            }
+            else
+            {
+                nodeGenerator.drawIndex = false;
+            }
+
+            EditorGUILayout.EndHorizontal();
+
+
             from = EditorGUILayout.IntField("Show From", from);
             to = EditorGUILayout.IntField("To", to);
             if (from < 0)

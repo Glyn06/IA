@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+[System.Serializable]
 public class Node
 {
-    [SerializeField] private List<Node> adjacents;
+    [SerializeField] private List<int> adjacentsIndex;
     [SerializeField] private Vector2 position;
     [SerializeField] private NodeStates nodeState;
     [SerializeField] private NodeStates originalState;
@@ -11,16 +12,16 @@ public class Node
     [SerializeField] private Node parentNode;
     [SerializeField] private bool used;
 
-    public List<Node> Adjacents
+    public List<int> Adjacents
     {
         get {
 
-            if (adjacents == null)
+            if (adjacentsIndex == null)
             {
-                adjacents = new List<Node>();
+                adjacentsIndex = new List<int>();
             }
 
-            return adjacents; }
+            return adjacentsIndex; }
     }
 
     public NodeStates NodeState
@@ -68,13 +69,20 @@ public class Node
         return nodeState;
     }
 
-    public void AddConection(Node node)
+    public void AddConection(Node node, List<Node> list)
     {
-        if (adjacents == null)
+        if (adjacentsIndex == null)
         {
-            adjacents = new List<Node>();
+            adjacentsIndex = new List<int>();
         }
-        adjacents.Add(node);
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i] == node)
+            {
+                adjacentsIndex.Add(i);
+                return;
+            }
+        }
     }
 
     public void OpenNode()
