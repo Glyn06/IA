@@ -3,6 +3,15 @@ using UnityEngine;
 
 public class PathFinding
 {
+    [System.Serializable]
+    public enum PathType
+    {
+        breadthFirst = 0,
+        depthFirst = 1,
+        dijstra = 2,
+        aStar = 3,
+    }
+
     private NodeManager nodeGenerator;
     private Node startNode;
     private Node destinationNode;
@@ -15,7 +24,7 @@ public class PathFinding
         closedNodes = new List<Node>();
     }
 
-    public List<Vector2> GetPath (Vector2 startPosition, Vector2 destinationPosition)
+    public List<Vector2> GetPath (Vector2 startPosition, Vector2 destinationPosition, PathType pathType)
     {
         if (NodeManager.instance == null)
         {
@@ -31,14 +40,14 @@ public class PathFinding
         startNode = nodeGenerator.PositionToNode(startPosition);
         destinationNode = nodeGenerator.PositionToNode(destinationPosition);
 
-        Debug.Log("Start: " + startNode.Position);
-        Debug.Log("Destination: " + destinationNode.Position);
+        //Debug.Log("Start: " + startNode.Position);
+        //Debug.Log("Destination: " + destinationNode.Position);
 
         startNode.OpenNode();
         openNodes.Add(startNode);
         while (openNodes.Count > 0)
         {
-            Node n = GetOpenNode();
+            Node n = GetOpenNode(pathType);
             if (n == destinationNode)
             {
                 List<Node> nodePath = new List<Node>();
@@ -108,8 +117,19 @@ public class PathFinding
         return list;
     }
 
-    private Node GetOpenNode()
+    private Node GetOpenNode(PathType type)
     {
-        return openNodes[0];
+        switch (type)
+        {
+            case PathType.breadthFirst:
+                return openNodes[0];
+            case PathType.depthFirst:
+                return openNodes[openNodes.Count - 1];
+            case PathType.dijstra:
+                return openNodes[0];
+            case PathType.aStar:
+                return openNodes[0];
+        }
+        return new Node(Vector2Int.zero,Node.NodeStates._count,false);
     }
 }
