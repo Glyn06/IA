@@ -30,7 +30,6 @@ public class PathFinding
         {
             return new List<Vector2>();
         }
-
         nodeGenerator = NodeManager.instance;
 
         if (nodeGenerator.nodes == null)
@@ -126,10 +125,20 @@ public class PathFinding
             case PathType.depthFirst:
                 return openNodes[openNodes.Count - 1];
             case PathType.dijstra:
-                return openNodes[0];
+                Node n = null;
+                uint currentMinWeight = int.MaxValue;
+                for (int i = 0; i < openNodes.Count; i++)
+                {
+                    if (openNodes[i].Weight < currentMinWeight)
+                    {
+                        n = openNodes[i];
+                        currentMinWeight = openNodes[i].Weight;
+                    }
+                }
+                return n;
             case PathType.aStar:
                 return openNodes[0];
         }
-        return new Node(Vector2Int.zero,Node.NodeStates._count,false);
+        return new Node(Vector2Int.zero,Node.NodeStates._count,false, 0);
     }
 }

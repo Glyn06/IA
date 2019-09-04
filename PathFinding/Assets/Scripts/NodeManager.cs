@@ -22,6 +22,7 @@ public class NodeManager : MonoBehaviour
     [Range(1, 4)] public int density;
     [HideInInspector] public bool drawGizmos;
     [HideInInspector] public bool drawIndex;
+    [HideInInspector] public bool drawWeight;
     [SerializeField] [HideInInspector] public List<Node> nodes;
     [SerializeField] [HideInInspector] private List<Collider2D> obstacleColliders;
     public ConectionColors nodeColors;
@@ -93,7 +94,7 @@ public class NodeManager : MonoBehaviour
                 }
                 if (!insideCollider)
                 {
-                    nodes.Add(new Node(new Vector2(((float)i / (float)density), ((float)j / (float)density)), Node.NodeStates.Ready, false));
+                    nodes.Add(new Node(new Vector2(((float)i / (float)density), ((float)j / (float)density)), Node.NodeStates.Ready, false, 1));
                 }
             }
         }
@@ -197,9 +198,12 @@ public class NodeManager : MonoBehaviour
                     if (drawIndex)
                     {
                         Handles.Label(node.Position, i.ToString());
+                        i++;
                     }
-                    i++;
-
+                    if (drawWeight)
+                    {
+                        Handles.Label(node.Position, node.Weight.ToString());
+                    }
                 }
             }
         }

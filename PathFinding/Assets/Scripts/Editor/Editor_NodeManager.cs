@@ -9,6 +9,9 @@ public class Editor_NodeManager : Editor {
     private int to;
     private string[] nodeStates;
     private GUIStyle style;
+
+
+
     private void OnEnable()
     {
         nodeStates = new string[(int)Node.NodeStates._count];
@@ -40,20 +43,29 @@ public class Editor_NodeManager : Editor {
         {
             EditorGUILayout.LabelField("Nodes Count = " + nodeGenerator.nodes.Count.ToString());
 
-            EditorGUILayout.BeginHorizontal();
 
             nodeGenerator.drawGizmos = EditorGUILayout.Toggle("Draw Gizmos", nodeGenerator.drawGizmos);
             if (nodeGenerator.drawGizmos)
             {
+                EditorGUILayout.BeginHorizontal();
+
                 nodeGenerator.drawIndex = EditorGUILayout.Toggle("Draw Index", nodeGenerator.drawIndex);
+                if (nodeGenerator.drawIndex)
+                {
+                    nodeGenerator.drawWeight = false;
+                }
+                nodeGenerator.drawWeight = EditorGUILayout.Toggle("Draw Weight", nodeGenerator.drawWeight);
+                if (nodeGenerator.drawWeight)
+                {
+                    nodeGenerator.drawIndex = false;
+                }
+                EditorGUILayout.EndHorizontal();
             }
             else
             {
                 nodeGenerator.drawIndex = false;
+                nodeGenerator.drawWeight = false;
             }
-
-            EditorGUILayout.EndHorizontal();
-
 
             from = EditorGUILayout.IntField("Show From", from);
             to = EditorGUILayout.IntField("To", to);
@@ -73,9 +85,9 @@ public class Editor_NodeManager : Editor {
                     if (i >= from && i <= to)
                     {
                         EditorGUILayout.LabelField("Node[" + i.ToString() + "] " + "Data", style, GUILayout.Height(50), GUILayout.ExpandWidth(true));
-                        n.NodeState = (Node.NodeStates)EditorGUILayout.Popup("State", (int)n.NodeState, nodeStates);
-                        n.Position = EditorGUILayout.Vector2Field("Position", n.Position);
-                        n.IsObstacle = EditorGUILayout.Toggle("Is Obstacle", n.IsObstacle);
+                        EditorGUILayout.Popup("State", (int)n.NodeState, nodeStates);
+                        EditorGUILayout.Vector2Field("Position", n.Position);
+                        EditorGUILayout.Toggle("Is Obstacle", n.IsObstacle);
                         EditorGUILayout.LabelField("Conections: " + n.Adjacents.Count.ToString());
                     }
                     i++;

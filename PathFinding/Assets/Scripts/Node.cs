@@ -11,6 +11,8 @@ public class Node
     [SerializeField] private bool isObstacle;
     [SerializeField] private Node parentNode;
     [SerializeField] private bool used;
+    [SerializeField] private uint weight;
+
 
     public List<int> Adjacents
     {
@@ -22,6 +24,12 @@ public class Node
             }
 
             return adjacentsIndex; }
+    }
+
+    public uint Weight
+    {
+        get { return weight;  }
+        set { weight = value; }
     }
 
     public NodeStates NodeState
@@ -56,12 +64,13 @@ public class Node
         [HideInInspector]_count
     }
 
-    public Node(Vector2 _position, NodeStates _state, bool _isObstacle)
+    public Node(Vector2 _position, NodeStates _state, bool _isObstacle, uint _weight)
     {
         isObstacle = _isObstacle;
         position = _position;
         nodeState = originalState = _state;
         used = false;
+        weight = _weight;
     }
 
     public NodeStates GetState()
