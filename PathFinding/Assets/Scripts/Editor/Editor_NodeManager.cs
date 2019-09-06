@@ -10,8 +10,6 @@ public class Editor_NodeManager : Editor {
     private string[] nodeStates;
     private GUIStyle style;
 
-
-
     private void OnEnable()
     {
         nodeStates = new string[(int)Node.NodeStates._count];

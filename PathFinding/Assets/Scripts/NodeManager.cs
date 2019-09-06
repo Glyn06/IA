@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEditor;
 public class NodeManager : MonoBehaviour
 {
-
     public static NodeManager instance;
 
     [System.Serializable]
@@ -17,6 +16,7 @@ public class NodeManager : MonoBehaviour
         public Color threeConectionNodeColor;
         public Color fourConectionNodeColor;
     }
+
     [System.Serializable]
     public struct WeightSelection
     {
@@ -24,8 +24,6 @@ public class NodeManager : MonoBehaviour
         public Rect selection;
         [Range(1,10)]public uint weight;
     }
-
-
 
     public Vector2Int worldSize;
     [Range(1, 4)] public int density;
@@ -43,11 +41,6 @@ public class NodeManager : MonoBehaviour
     {
         instance = this;
     }
-
-    private void Start()
-    {
-    }
-
 
     private void Update()
     {
@@ -120,8 +113,6 @@ public class NodeManager : MonoBehaviour
 
         Vector2 rightDistance = new Vector2(((float)(1.0f / (float)density)), 0.0f);
         Vector2 upDistance = new Vector2(0.0f,((float)(1.0f / (float)density)));
-
-
         RaycastHit2D raycastHit2D;
 
         foreach (Node currentNode in nodes)
@@ -150,9 +141,6 @@ public class NodeManager : MonoBehaviour
                 }
             }
         }
-
-
-
     }
 
     private void OnDrawGizmos()
@@ -228,7 +216,7 @@ public class NodeManager : MonoBehaviour
     private List<GameObject> GetAllObjectsInScene()
     {
         List<GameObject> objectsInScene = new List<GameObject>();
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         foreach (GameObject go in Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[])
         {
             if (go.hideFlags != HideFlags.None)
@@ -239,7 +227,7 @@ public class NodeManager : MonoBehaviour
 
             objectsInScene.Add(go);
         }
-#endif
+        #endif
         return objectsInScene;
     }
 

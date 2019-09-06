@@ -121,24 +121,50 @@ public class PathFinding
         switch (type)
         {
             case PathType.breadthFirst:
-                return openNodes[0];
-            case PathType.depthFirst:
-                return openNodes[openNodes.Count - 1];
-            case PathType.dijstra:
-                Node n = null;
-                uint currentMinWeight = int.MaxValue;
-                for (int i = 0; i < openNodes.Count; i++)
                 {
-                    if (openNodes[i].Weight < currentMinWeight)
-                    {
-                        n = openNodes[i];
-                        currentMinWeight = openNodes[i].Weight;
-                    }
+                    return openNodes[0];
                 }
-                return n;
+            case PathType.depthFirst:
+                {
+                    return openNodes[openNodes.Count - 1];
+                }
+            case PathType.dijstra:
+                {
+                    Node n = null;
+                    uint currentMinWeight = int.MaxValue;
+                    for (int i = 0; i < openNodes.Count; i++)
+                    {
+                        if (openNodes[i].Weight < currentMinWeight)
+                        {
+                            n = openNodes[i];
+                            currentMinWeight = openNodes[i].Weight;
+                        }
+                    }
+                    return n;
+                }
             case PathType.aStar:
-                return openNodes[0];
+                {
+                    Node n = null;
+                    uint currentMinWeightAndDistance = int.MaxValue;
+                    for (int i = 0; i < openNodes.Count; i++)
+                    {
+                        if (openNodes[i].Weight + ManhattanDistance(openNodes[i].Position, destinationNode.Position) < currentMinWeightAndDistance)
+                        {
+                            n = openNodes[i];
+                            currentMinWeightAndDistance = openNodes[i].Weight + ManhattanDistance(openNodes[i].Position, destinationNode.Position);
+                        }
+                    }
+                    return n;
+                }
         }
         return new Node(Vector2Int.zero,Node.NodeStates._count,false, 0);
     }
+
+    private uint ManhattanDistance(Vector2 origin, Vector2 destination)
+    {
+        uint x = (uint)Mathf.Abs(origin.x - destination.x);
+        uint y = (uint)Mathf.Abs(origin.y - destination.y);
+        return x + y;
+    }
 }
+
