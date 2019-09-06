@@ -17,6 +17,15 @@ public class NodeManager : MonoBehaviour
         public Color threeConectionNodeColor;
         public Color fourConectionNodeColor;
     }
+    [System.Serializable]
+    public struct WeightSelection
+    {
+        public Color selectionColor;
+        public Rect selection;
+        [Range(1,10)]public uint weight;
+    }
+
+
 
     public Vector2Int worldSize;
     [Range(1, 4)] public int density;
@@ -26,14 +35,13 @@ public class NodeManager : MonoBehaviour
     [SerializeField] [HideInInspector] public List<Node> nodes;
     [SerializeField] [HideInInspector] private List<Collider2D> obstacleColliders;
     public ConectionColors nodeColors;
-
+    public WeightSelection weightSelection;
     private const string staticLayer = "Static";
     private const string obstacleLayer = "Obstacle";
 
     private void Awake()
     {
         instance = this;
-        //GenerateNodes();
     }
 
     private void Start()
@@ -149,6 +157,14 @@ public class NodeManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (drawGizmos)
+        {
+            Gizmos.color = weightSelection.selectionColor;
+            Gizmos.DrawLine(weightSelection.selection.position, weightSelection.selection.position + new Vector2(weightSelection.selection.width, 0.0f));
+            Gizmos.DrawLine(weightSelection.selection.position, weightSelection.selection.position + new Vector2(0.0f, weightSelection.selection.height));
+            Gizmos.DrawLine(weightSelection.selection.position + new Vector2(weightSelection.selection.width, 0.0f), weightSelection.selection.position + new Vector2(weightSelection.selection.width, weightSelection.selection.height));
+            Gizmos.DrawLine(weightSelection.selection.position + new Vector2(0.0f, weightSelection.selection.height), weightSelection.selection.position + new Vector2(weightSelection.selection.width, weightSelection.selection.height));
+        }
         if (nodes != null)
         {
             foreach (Node node in nodes)
@@ -212,7 +228,7 @@ public class NodeManager : MonoBehaviour
     private List<GameObject> GetAllObjectsInScene()
     {
         List<GameObject> objectsInScene = new List<GameObject>();
-
+#if UNITY_EDITOR
         foreach (GameObject go in Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[])
         {
             if (go.hideFlags != HideFlags.None)
@@ -223,6 +239,7 @@ public class NodeManager : MonoBehaviour
 
             objectsInScene.Add(go);
         }
+#endif
         return objectsInScene;
     }
 
@@ -251,6 +268,20 @@ public class NodeManager : MonoBehaviour
             }
         }
         return currentNode;
+    }
+
+    public void SetNodesWeight()
+    {
+        if (nodes !=  null)
+        {
+            foreach (Node node in nodes)
+            {
+                if (weightSelection.selection.Contains(node.Position))
+                {
+                    node.Weight = weightSelection.weight;
+                }
+            }
+        }
     }
 
 }

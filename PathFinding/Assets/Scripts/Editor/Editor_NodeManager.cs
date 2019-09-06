@@ -23,48 +23,54 @@ public class Editor_NodeManager : Editor {
     }
     public override void OnInspectorGUI()
     {
-        NodeManager nodeGenerator = (NodeManager)target;
+        NodeManager nodeManager = (NodeManager)target;
         style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter , fontSize = 25, };
 
         if (GUILayout.Button("Generate Nodes"))
         {
-            nodeGenerator.ClearNodes();
-            nodeGenerator.GenerateNodes();
+            nodeManager.ClearNodes();
+            nodeManager.GenerateNodes();
         }
 
         if (GUILayout.Button("Clear Nodes"))
         {
-            nodeGenerator.ClearNodes();
+            nodeManager.ClearNodes();
         }
 
         base.OnInspectorGUI();
-        EditorGUILayout.Space();
-        if (nodeGenerator.nodes != null)
+
+        if (GUILayout.Button("Set Weight"))
         {
-            EditorGUILayout.LabelField("Nodes Count = " + nodeGenerator.nodes.Count.ToString());
+            nodeManager.SetNodesWeight();
+        }
+
+        EditorGUILayout.Space();
+        if (nodeManager.nodes != null)
+        {
+            EditorGUILayout.LabelField("Nodes Count = " + nodeManager.nodes.Count.ToString());
 
 
-            nodeGenerator.drawGizmos = EditorGUILayout.Toggle("Draw Gizmos", nodeGenerator.drawGizmos);
-            if (nodeGenerator.drawGizmos)
+            nodeManager.drawGizmos = EditorGUILayout.Toggle("Draw Gizmos", nodeManager.drawGizmos);
+            if (nodeManager.drawGizmos)
             {
                 EditorGUILayout.BeginHorizontal();
 
-                nodeGenerator.drawIndex = EditorGUILayout.Toggle("Draw Index", nodeGenerator.drawIndex);
-                if (nodeGenerator.drawIndex)
+                nodeManager.drawIndex = EditorGUILayout.Toggle("Draw Index", nodeManager.drawIndex);
+                if (nodeManager.drawIndex)
                 {
-                    nodeGenerator.drawWeight = false;
+                    nodeManager.drawWeight = false;
                 }
-                nodeGenerator.drawWeight = EditorGUILayout.Toggle("Draw Weight", nodeGenerator.drawWeight);
-                if (nodeGenerator.drawWeight)
+                nodeManager.drawWeight = EditorGUILayout.Toggle("Draw Weight", nodeManager.drawWeight);
+                if (nodeManager.drawWeight)
                 {
-                    nodeGenerator.drawIndex = false;
+                    nodeManager.drawIndex = false;
                 }
                 EditorGUILayout.EndHorizontal();
             }
             else
             {
-                nodeGenerator.drawIndex = false;
-                nodeGenerator.drawWeight = false;
+                nodeManager.drawIndex = false;
+                nodeManager.drawWeight = false;
             }
 
             from = EditorGUILayout.IntField("Show From", from);
@@ -80,7 +86,7 @@ public class Editor_NodeManager : Editor {
             {
                 EditorGUILayout.BeginVertical();
                 int i = 0;
-                foreach (Node n in nodeGenerator.nodes)
+                foreach (Node n in nodeManager.nodes)
                 {
                     if (i >= from && i <= to)
                     {
