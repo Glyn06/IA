@@ -12,6 +12,7 @@ public class Node
     [SerializeField] private Node parentNode;
     [SerializeField] private bool used;
     [SerializeField] private uint weight;
+    [SerializeField] private uint totalWeight;
 
 
     public List<int> Adjacents
@@ -24,6 +25,12 @@ public class Node
             }
 
             return adjacentsIndex; }
+    }
+
+    public uint TotalWeight
+    {
+        get { return totalWeight; }
+        set { totalWeight = value; }
     }
 
     public uint Weight
@@ -106,6 +113,8 @@ public class Node
         {
             parentNode = n;
             nodeState = NodeStates.Open;
+
+            TotalWeight = parentNode.TotalWeight + Weight;
         }
     }
 

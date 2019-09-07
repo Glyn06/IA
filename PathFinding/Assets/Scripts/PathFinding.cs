@@ -17,6 +17,7 @@ public class PathFinding
     private Node destinationNode;
     private List<Node> openNodes;
     private List<Node> closedNodes;
+    private uint totalWeight;
 
     public PathFinding()
     {
@@ -134,10 +135,10 @@ public class PathFinding
                     uint currentMinWeight = int.MaxValue;
                     for (int i = 0; i < openNodes.Count; i++)
                     {
-                        if (openNodes[i].Weight < currentMinWeight)
+                        if (openNodes[i].TotalWeight < currentMinWeight)
                         {
                             n = openNodes[i];
-                            currentMinWeight = openNodes[i].Weight;
+                            currentMinWeight = openNodes[i].TotalWeight;
                         }
                     }
                     return n;
@@ -148,10 +149,10 @@ public class PathFinding
                     uint currentMinWeightAndDistance = int.MaxValue;
                     for (int i = 0; i < openNodes.Count; i++)
                     {
-                        if (openNodes[i].Weight + ManhattanDistance(openNodes[i].Position, destinationNode.Position) < currentMinWeightAndDistance)
+                        if (openNodes[i].TotalWeight + ManhattanDistance(openNodes[i].Position, destinationNode.Position) < currentMinWeightAndDistance)
                         {
                             n = openNodes[i];
-                            currentMinWeightAndDistance = openNodes[i].Weight + ManhattanDistance(openNodes[i].Position, destinationNode.Position);
+                            currentMinWeightAndDistance = openNodes[i].TotalWeight + ManhattanDistance(openNodes[i].Position, destinationNode.Position);
                         }
                     }
                     return n;
