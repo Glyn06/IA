@@ -8,7 +8,7 @@ public class PathFinding
     {
         breadthFirst = 0,
         depthFirst = 1,
-        dijstra = 2,
+        dijkstra = 2,
         aStar = 3,
     }
 
@@ -129,7 +129,7 @@ public class PathFinding
                 {
                     return openNodes[openNodes.Count - 1];
                 }
-            case PathType.dijstra:
+            case PathType.dijkstra:
                 {
                     Node n = null;
                     uint currentMinWeight = int.MaxValue;
