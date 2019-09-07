@@ -9,7 +9,7 @@ public class Editor_NodeManager : Editor {
     private int to;
     private string[] nodeStates;
     private GUIStyle style;
-
+    private bool selectionFoldOut = false;
     private void OnEnable()
     {
         nodeStates = new string[(int)Node.NodeStates._count];
@@ -35,12 +35,34 @@ public class Editor_NodeManager : Editor {
             nodeManager.ClearNodes();
         }
 
+        if (GUILayout.Button("Reset Weight"))
+        {
+            nodeManager.ResetNodesWeight();
+        }
+
         base.OnInspectorGUI();
 
-        if (GUILayout.Button("Set Weight"))
+        EditorGUI.BeginChangeCheck();
+        
+        selectionFoldOut = EditorGUILayout.Foldout(selectionFoldOut, "Weight Selection");
+        if (selectionFoldOut)
         {
-            nodeManager.SetNodesWeight();
+            nodeManager.weightSelection.selectionColor = EditorGUILayout.ColorField("Selection Color",nodeManager.weightSelection.selectionColor, null);
+            nodeManager.weightSelection.selection = EditorGUILayout.RectField("Selection", nodeManager.weightSelection.selection, null);
+            nodeManager.weightSelection.weight = (uint)EditorGUILayout.IntSlider("Weight", (int)nodeManager.weightSelection.weight, 1, 10);
+            if (GUILayout.Button("Set Weight"))
+            {
+                nodeManager.SetNodesWeight();
+            }
+
         }
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorUtility.SetDirty(this.target);
+        }
+
+       
 
         EditorGUILayout.Space();
         if (nodeManager.nodes != null)
@@ -78,7 +100,7 @@ public class Editor_NodeManager : Editor {
             if (to < from)
                 to = from;
 
-            toggle = EditorGUILayout.BeginToggleGroup("Nodes list", toggle);
+            toggle = EditorGUILayout.Foldout(toggle, "Nodes list");
 
             if (toggle)
             {
@@ -98,7 +120,6 @@ public class Editor_NodeManager : Editor {
                 }
                 EditorGUILayout.EndVertical();
             }
-            EditorGUILayout.EndToggleGroup();
         }
     }
 }

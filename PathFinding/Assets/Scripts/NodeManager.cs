@@ -33,7 +33,7 @@ public class NodeManager : MonoBehaviour
     [SerializeField] [HideInInspector] public List<Node> nodes;
     [SerializeField] [HideInInspector] private List<Collider2D> obstacleColliders;
     public ConectionColors nodeColors;
-    public WeightSelection weightSelection;
+    [HideInInspector] public WeightSelection weightSelection;
     private const string staticLayer = "Static";
     private const string obstacleLayer = "Obstacle";
 
@@ -268,6 +268,17 @@ public class NodeManager : MonoBehaviour
                 {
                     node.Weight = weightSelection.weight;
                 }
+            }
+        }
+    }
+
+    public void ResetNodesWeight()
+    {
+        if (nodes != null)
+        {
+            foreach (Node node in nodes)
+            {
+                node.Weight = 1;
             }
         }
     }
