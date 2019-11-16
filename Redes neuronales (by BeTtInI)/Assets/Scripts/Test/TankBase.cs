@@ -5,12 +5,14 @@ public class TankBase : MonoBehaviour
 {
     public float Speed = 10.0f;
     public float RotSpeed = 20.0f;
-
+    public GameObject bulletPrefab;
+    public Transform spawnBulletPoint;
     protected Genome genome;
 	protected NeuralNetwork brain;
     protected GameObject nearMine;
     protected GameObject goodMine;
     protected GameObject badMine;
+    protected GameObject nearestTank;
     protected float[] inputs;
 
     // Sets a brain to the tank
@@ -20,6 +22,11 @@ public class TankBase : MonoBehaviour
         this.brain = brain;
         inputs = new float[brain.InputsCount];
         OnReset();
+    }
+
+    public void SetNearestTank(GameObject _tank)
+    {
+        nearestTank = _tank;
     }
 
     // Used by the PopulationManager to set the closest mine
@@ -43,9 +50,9 @@ public class TankBase : MonoBehaviour
         return goodMine == mine;
     }
 
-    protected Vector3 GetDirToMine(GameObject mine)
+    protected Vector3 GetDirToTank(GameObject tank)
     {
-        return (mine.transform.position - this.transform.position).normalized;
+        return (tank.transform.position - this.transform.position).normalized;
     }
     
     protected bool IsCloseToMine(GameObject mine)
@@ -53,7 +60,7 @@ public class TankBase : MonoBehaviour
         return (this.transform.position - nearMine.transform.position).sqrMagnitude <= 2.0f;
     }
 
-    protected void SetForces(float leftForce, float rightForce, float dt)
+    protected void SetForces(float leftForce, float rightForce, float shoot, float dt)
     {
         // Tank position
         Vector3 pos = this.transform.position;
@@ -70,6 +77,18 @@ public class TankBase : MonoBehaviour
         // Sets current position
         this.transform.position = pos;
 
+        if (shoot > 0.5f)
+        {
+            Shoot();
+        }
+
+    }
+
+    public void Shoot()
+    {
+        Bullet b = Instantiate(bulletPrefab, spawnBulletPoint.position, spawnBulletPoint.rotation).GetComponent<Bullet>();
+        b.SetOwnerTank(this);
+        RemoveFitness();
     }
 
 	// Update is called once per frame
@@ -77,12 +96,12 @@ public class TankBase : MonoBehaviour
 	{
         OnThink(dt);
 
-        if(IsCloseToMine(nearMine))
+        /*if(IsCloseToMine(nearMine))
         {
             OnTakeMine(nearMine);
             // Move the mine to a random position in the screen
             PopulationManager.Instance.RelocateMine(nearMine);
-        }
+        }*/
 	}
 
     protected virtual void OnThink(float dt)
@@ -90,7 +109,7 @@ public class TankBase : MonoBehaviour
 
     }
 
-    protected virtual void OnTakeMine(GameObject mine)
+    public virtual void AddFitness()
     {
     }
 
@@ -98,4 +117,6 @@ public class TankBase : MonoBehaviour
     {
 
     }
+
+    public virtual void RemoveFitness() { }
 }

@@ -10,7 +10,7 @@ public class PopulationManager : MonoBehaviour
     public int PopulationCount = 40;
     public int MinesCount = 50;
 
-    public Vector3 SceneHalfExtents = new Vector3 (20.0f, 0.0f, 20.0f);
+    public Vector3 SceneHalfExtents = new Vector3(20.0f, 0.0f, 20.0f);
 
     public float GenerationDuration = 20.0f;
     public int IterationCount = 1;
@@ -35,25 +35,31 @@ public class PopulationManager : MonoBehaviour
     List<GameObject> mines = new List<GameObject>();
     List<GameObject> goodMines = new List<GameObject>();
     List<GameObject> badMines = new List<GameObject>();
-     
+
     float accumTime = 0;
     bool isRunning = false;
 
-    public int generation {
-        get; private set;
+    public Tank[] GetAllTanks()
+    {
+        return populationGOs.ToArray();
     }
 
-    public float bestFitness 
+    public int generation
     {
         get; private set;
     }
 
-    public float avgFitness 
+    public float bestFitness
     {
         get; private set;
     }
 
-    public float worstFitness 
+    public float avgFitness
+    {
+        get; private set;
+    }
+
+    public float worstFitness
     {
         get; private set;
     }
@@ -61,7 +67,7 @@ public class PopulationManager : MonoBehaviour
     private float getBestFitness()
     {
         float fitness = 0;
-        foreach(Genome g in population)
+        foreach (Genome g in population)
         {
             if (fitness < g.fitness)
                 fitness = g.fitness;
@@ -73,7 +79,7 @@ public class PopulationManager : MonoBehaviour
     private float getAvgFitness()
     {
         float fitness = 0;
-        foreach(Genome g in population)
+        foreach (Genome g in population)
         {
             fitness += g.fitness;
         }
@@ -84,7 +90,7 @@ public class PopulationManager : MonoBehaviour
     private float getWorstFitness()
     {
         float fitness = float.MaxValue;
-        foreach(Genome g in population)
+        foreach (Genome g in population)
         {
             if (fitness > g.fitness)
                 fitness = g.fitness;
@@ -121,7 +127,6 @@ public class PopulationManager : MonoBehaviour
         genAlg = new GeneticAlgorithm(EliteCount, MutationChance, MutationRate);
 
         GenerateInitialPopulation();
-        CreateMines();
 
         isRunning = true;
     }
@@ -141,7 +146,6 @@ public class PopulationManager : MonoBehaviour
         DestroyTanks();
 
         // Destroy all mines
-        DestroyMines();
     }
 
     // Generate the random initial population
@@ -151,11 +155,11 @@ public class PopulationManager : MonoBehaviour
 
         // Destroy previous tanks (if there are any)
         DestroyTanks();
-        
+
         for (int i = 0; i < PopulationCount; i++)
         {
             NeuralNetwork brain = CreateBrain();
-            
+
             Genome genome = new Genome(brain.GetTotalWeightsCount());
 
             brain.SetWeights(genome.genome);
@@ -219,35 +223,31 @@ public class PopulationManager : MonoBehaviour
             populationGOs[i].transform.position = GetRandomPos();
             populationGOs[i].transform.rotation = GetRandomRot();
         }
+
+        Bullet[] bullets = FindObjectsOfType<Bullet>();
+        foreach (Bullet b in bullets)
+        {
+            Destroy(b.gameObject);
+        }
     }
 
     // Update is called once per frame
-    void FixedUpdate () 
-	{
+    void FixedUpdate()
+    {
         if (!isRunning)
             return;
-        
+
         float dt = Time.fixedDeltaTime;
 
-        for (int i = 0; i < Mathf.Clamp((float)(IterationCount / 100.0f) * 50, 1, 50); i++)
+        for (int i = 0; i < IterationCount; i++)
         {
             foreach (Tank t in populationGOs)
             {
                 // Get the nearest mine
-                GameObject mine = GetNearestMine(t.transform.position);
+                GameObject tank = GetNearestTank(t.transform.position);
 
                 // Set the nearest mine to current tank
-                t.SetNearestMine(mine);
-
-                mine = GetNearestGoodMine(t.transform.position);
-
-                // Set the nearest mine to current tank
-                t.SetGoodNearestMine(mine);
-
-                mine = GetNearestBadMine(t.transform.position);
-
-                // Set the nearest mine to current tank
-                t.SetBadNearestMine(mine);
+                t.SetNearestTank(tank);
 
                 // Think!! 
                 t.Think(dt);
@@ -277,9 +277,9 @@ public class PopulationManager : MonoBehaviour
                 break;
             }
         }
-	}
+    }
 
-#region Helpers
+    #region Helpers
     Tank CreateTank(Genome genome, NeuralNetwork brain)
     {
         Vector3 position = GetRandomPos();
@@ -358,7 +358,7 @@ public class PopulationManager : MonoBehaviour
 
     Vector3 GetRandomPos()
     {
-        return new Vector3(Random.value * SceneHalfExtents.x * 2.0f - SceneHalfExtents.x, 0.0f, Random.value * SceneHalfExtents.z * 2.0f - SceneHalfExtents.z); 
+        return new Vector3(Random.value * SceneHalfExtents.x * 2.0f - SceneHalfExtents.x, 0.0f, Random.value * SceneHalfExtents.z * 2.0f - SceneHalfExtents.z);
     }
 
     Quaternion GetRandomRot()
@@ -382,7 +382,7 @@ public class PopulationManager : MonoBehaviour
         }
 
         return nearest;
-    }   
+    }
 
     GameObject GetNearestGoodMine(Vector3 pos)
     {
@@ -400,7 +400,7 @@ public class PopulationManager : MonoBehaviour
         }
 
         return nearest;
-    }   
+    }
 
     GameObject GetNearestBadMine(Vector3 pos)
     {
@@ -418,8 +418,31 @@ public class PopulationManager : MonoBehaviour
         }
 
         return nearest;
-    }   
+    }
 
-#endregion
+    GameObject GetNearestTank(Vector3 pos)
+    {
+        List<GameObject> tanks = new List<GameObject>();
+        foreach (Tank t in populationGOs)
+            if (t.gameObject.transform.position != pos)
+                tanks.Add(t.gameObject);
+
+        GameObject nearest = tanks[0];
+        float distance = (pos - nearest.transform.position).sqrMagnitude;
+
+        foreach (GameObject go in tanks)
+        {
+            float newDist = (go.transform.position - pos).sqrMagnitude;
+            if (newDist < distance)
+            {
+                nearest = go;
+                distance = newDist;
+            }
+        }
+
+        return nearest;
+    }
+
+    #endregion
 
 }

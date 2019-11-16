@@ -3071,7 +3071,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1749557222}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 100
+  m_MaxValue: 1000
   m_WholeNumbers: 1
   m_Value: 1
   m_OnValueChanged:
@@ -4714,7 +4714,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1227139155}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 100
+  m_MaxValue: 20
   m_WholeNumbers: 1
   m_Value: 1
   m_OnValueChanged:
@@ -5843,8 +5843,8 @@ MonoBehaviour:
   MutationChance: 0.11
   MutationRate: 0.02
   InputsCount: 4
-  HiddenLayers: 1
-  OutputsCount: 2
+  HiddenLayers: 3
+  OutputsCount: 3
   NeuronsCountPerHL: 7
   Bias: -1
   P: 0.5
