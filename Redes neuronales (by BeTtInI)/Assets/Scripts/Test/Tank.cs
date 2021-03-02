@@ -12,14 +12,14 @@ public class Tank : TankBase
     protected override void OnThink(float dt) 
 	{
         // Direction to closest mine (normalized!)
-        Vector3 dirToTank = GetDirToTank(nearestTank);
+        Vector3 dirToMine = GetDirToMine(nearMine);
 
         // Current tank view direction (it's always normalized)
         Vector3 dir = this.transform.forward;
 
         // Sets current tank view direction and direction to the mine as inputs to the Neural Network
-        inputs[0] = dirToTank.x;
-        inputs[1] = dirToTank.z;
+        inputs[0] = dirToMine.x;
+        inputs[1] = dirToMine.z;
         inputs[2] = dir.x;
         inputs[3] = dir.z;
 
@@ -28,10 +28,15 @@ public class Tank : TankBase
 
         SetForces(output[0], output[1], output[2], dt);
 	}
-    
+
+    public override void OnTakeMine(GameObject _mine)
+    {
+        AddFitness();
+    }
+
     public override void AddFitness()
     {
-        fitness += 10;
+        fitness += 60;
         genome.fitness = fitness;
     }
 

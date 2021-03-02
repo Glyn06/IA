@@ -128,6 +128,8 @@ public class PopulationManager : MonoBehaviour
 
         GenerateInitialPopulation();
 
+        CreateMines();
+
         isRunning = true;
     }
 
@@ -146,6 +148,7 @@ public class PopulationManager : MonoBehaviour
         DestroyTanks();
 
         // Destroy all mines
+        DestroyMines();
     }
 
     // Generate the random initial population
@@ -244,10 +247,10 @@ public class PopulationManager : MonoBehaviour
             foreach (Tank t in populationGOs)
             {
                 // Get the nearest mine
-                GameObject tank = GetNearestTank(t.transform.position);
-
+                GameObject mine = GetNearestMine(t.transform.position);//GetNearestTank(t.transform.position);
+                
                 // Set the nearest mine to current tank
-                t.SetNearestTank(tank);
+                t.SetNearestMine(mine);
 
                 // Think!! 
                 t.Think(dt);

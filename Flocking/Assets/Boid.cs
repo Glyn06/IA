@@ -2,31 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boid : MonoBehaviour {
-    FlockingManager fM;
-    public float speed = 2.5f;
-    public float turnSpeed = 5f;
-    public Vector2 currentPosition;
-    public Vector3 currentRotation;
-    public CircleCollider2D circleCollider2D;
+[RequireComponent(typeof(Collider2D))]
+public class Boid : MonoBehaviour
+{
+    Collider2D boidCollider;
+    public Collider2D BoidCollider { get { return boidCollider; } }
 
     private void Start()
     {
-        fM = FlockingManager.instance;
+        boidCollider = GetComponent<Collider2D>();
     }
 
-    private void Update()
+    public void Move(Vector2 velocity)
     {
-        transform.position += transform.up * speed * Time.deltaTime;
-        currentPosition = transform.position;
-        transform.up = Vector3.Lerp(transform.up, ACS(),turnSpeed* Time.deltaTime);
-    }
-
-    public Vector2 ACS() {
-
-        Vector2 ACS = fM.Alignment(this) + fM.Cohesion(this) + fM.Separation(this) + fM.Direction(this,fM.flockPoint);
-        ACS.Normalize();
-
-        return ACS;
+        transform.up = velocity;
+        transform.position += (Vector3)velocity * Time.deltaTime;
     }
 }

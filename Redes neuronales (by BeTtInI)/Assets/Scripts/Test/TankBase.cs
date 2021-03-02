@@ -8,12 +8,13 @@ public class TankBase : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform spawnBulletPoint;
     protected Genome genome;
-	protected NeuralNetwork brain;
+    protected NeuralNetwork brain;
     protected GameObject nearMine;
     protected GameObject goodMine;
     protected GameObject badMine;
     protected GameObject nearestTank;
     protected float[] inputs;
+    protected float timer = 0f;
 
     // Sets a brain to the tank
     public void SetBrain(Genome genome, NeuralNetwork brain)
@@ -50,11 +51,11 @@ public class TankBase : MonoBehaviour
         return goodMine == mine;
     }
 
-    protected Vector3 GetDirToTank(GameObject tank)
+    protected Vector3 GetDirToMine(GameObject mine)
     {
-        return (tank.transform.position - this.transform.position).normalized;
+        return (mine.transform.position - this.transform.position).normalized;
     }
-    
+
     protected bool IsCloseToMine(GameObject mine)
     {
         return (this.transform.position - nearMine.transform.position).sqrMagnitude <= 2.0f;
@@ -76,33 +77,35 @@ public class TankBase : MonoBehaviour
 
         // Sets current position
         this.transform.position = pos;
-
-        if (shoot > 0.5f)
-        {
-            Shoot();
-        }
-
     }
 
-    public void Shoot()
+    // Update is called once per frame
+    public void Think(float dt)
     {
-        Bullet b = Instantiate(bulletPrefab, spawnBulletPoint.position, spawnBulletPoint.rotation).GetComponent<Bullet>();
-        b.SetOwnerTank(this);
-        RemoveFitness();
-    }
-
-	// Update is called once per frame
-	public void Think(float dt) 
-	{
         OnThink(dt);
 
-        /*if(IsCloseToMine(nearMine))
+        if (IsCloseToMine(nearMine))
         {
             OnTakeMine(nearMine);
             // Move the mine to a random position in the screen
             PopulationManager.Instance.RelocateMine(nearMine);
-        }*/
-	}
+        }
+
+        if (transform.forward.normalized != GetDirToMine(nearMine))
+        {
+            OnNotDir();
+        }
+    }
+
+    public virtual void OnNotDir()
+    {
+
+    }
+
+    public virtual void OnTakeMine(GameObject _mine)
+    {
+
+    }
 
     protected virtual void OnThink(float dt)
     {

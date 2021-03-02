@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4025175891878198}
   - component: {fileID: 212270192921491488}
   - component: {fileID: 114629415548938678}
-  - component: {fileID: 114709136190520100}
+  - component: {fileID: 114893725437188168}
   - component: {fileID: 50963988773055766}
   m_Layer: 0
   m_Name: Miner
@@ -75,9 +75,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deposit: {fileID: 0}
-  speed: 250
   maxGoldCapacity: 10
---- !u!114 &114709136190520100
+--- !u!114 &114893725437188168
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}

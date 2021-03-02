@@ -29,7 +29,7 @@ public class Miner : MonoBehaviour
     private Rigidbody2D rb;
     private float goldDeposit = 0.0f;
     private Mine goldMine;
-    private Seeker pathfinder;
+    private Seeker seeker;
 
     public GoldDeposit deposit;
     public float maxGoldCapacity;
@@ -38,7 +38,7 @@ public class Miner : MonoBehaviour
 
     void Start()
     {
-        pathfinder = GetComponent<Seeker>();
+        seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
         fsm = new FSM((int)States._count, (int)Flags._count);
 
@@ -61,7 +61,11 @@ public class Miner : MonoBehaviour
         switch (fsm.GetState())
         {
             case (int)States.idle:
-                LookForMines();
+                goldMine = FindObjectOfType<Mine>();
+
+                if (goldMine != null)
+                    fsm.SetState((int)States.goToMining);
+                //LookForMines();
                 break;
             case (int)States.goToMining:
                 GoToMine();
@@ -78,60 +82,38 @@ public class Miner : MonoBehaviour
             default:
                 break;
         }
-    }
 
-    public void LookForMines()
-    {
-        goldMine = FindObjectOfType<Mine>();
-
-        if (goldDeposit > 0)
-        {
-            pathfinder.FindPath(gameObject, deposit.gameObject);
-            fsm.SetState((int)States.goToHome);
-            //rb.velocity = Vector2.zero;
-        }
-
-        if (goldMine != null)
-        {
-            pathfinder.FindPath(gameObject, goldMine.gameObject);
-            fsm.SetState((int)States.goToMining);
-            //rb.velocity = Vector2.zero;
-        }
-
-        Debug.Log(gameObject.name + " is Iddle");
+        Debug.Log(fsm.GetState());
     }
 
     private void GoToMine()
     {
-        if (goldMine == null)
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        seeker.FindPath(gameObject, goldMine.gameObject);
+        //Vector2 direction = new Vector2((goldMine.gameObject.transform.position - transform.position).x, (goldMine.gameObject.transform.position - transform.position).y);
+        //direction.Normalize();
+        //rb.velocity = new Vector2((direction.x * speed * Time.deltaTime), (direction.y * speed * Time.deltaTime));
+        if (seeker.Move(timer)/*Vector2.Distance(goldMine.gameObject.transform.position, transform.position) < 0.1f*/)
         {
-            Debug.Log(gameObject.name + ": My mine was destroyed!");
-            fsm.SetState((int)States.idle);
+            fsm.SetState((int)States.minning);
             //rb.velocity = Vector2.zero;
         }
-        else
-        {
-            if (goldMine != null)
-            {
-                if (pathfinder.Move(timer))
-                    timer = 0;
-                /*
-                Vector2 direction = new Vector2((goldMine.gameObject.transform.position - transform.position).x, (goldMine.gameObject.transform.position - transform.position).y);
-                direction.Normalize();
-                rb.velocity = new Vector2((direction.x * speed * Time.deltaTime), (direction.y * speed * Time.deltaTime));
-                */
 
-                if (goldMine != null && transform.position == pathfinder.target.transform.position/*Vector2.Distance(goldMine.gameObject.transform.position, transform.position) < 0.1f*/)
-                {
-                    fsm.SetState((int)States.minning);
-                    //rb.velocity = Vector2.zero;
-                }
-            }
-        }
     }
 
     private void Mining()
     {
+
         if (goldMine.gold > 0)
         {
             goldMine.gold--;
@@ -140,21 +122,19 @@ public class Miner : MonoBehaviour
 
         if (goldDeposit == maxGoldCapacity || goldMine == null)
         {
-            pathfinder.FindPath(gameObject, deposit.gameObject);
             fsm.SetState((int)States.goToHome);
         }
+
+
     }
 
     private void GoToHome()
     {
-        if (pathfinder.Move(timer))
-            timer = 0;
-            
-        /*
-        Vector2 direction = new Vector2((deposit.transform.position - transform.position).x, (deposit.transform.position - transform.position).y);
-        direction.Normalize();
-        rb.velocity = new Vector2((direction.x * speed * Time.deltaTime), (direction.y * speed * Time.deltaTime));*/
-        if (transform.position == pathfinder.target.transform.position/*Vector2.Distance(deposit.transform.position, transform.position) < 0.1f*/)
+        seeker.FindPath(gameObject, deposit.gameObject);
+        //Vector2 direction = new Vector2((deposit.transform.position - transform.position).x, (deposit.transform.position - transform.position).y);
+        //direction.Normalize();
+        //rb.velocity = new Vector2((direction.x * speed * Time.deltaTime), (direction.y * speed * Time.deltaTime));
+        if (seeker.Move(timer)/*Vector2.Distance(deposit.transform.position, transform.position) < 0.1f*/)
         {
             fsm.SetState((int)States.deposit);
             //rb.velocity = Vector2.zero;
@@ -165,19 +145,19 @@ public class Miner : MonoBehaviour
     {
         deposit.acumulatedGold++;
         goldDeposit--;
+
+        goldMine = FindObjectOfType<Mine>();
+
         if (goldDeposit == 0)
         {
-            if (goldMine != null)
-                pathfinder.FindPath(gameObject, goldMine.gameObject);
-
             fsm.SetState((int)States.goToMining);
         }
+
         if (goldMine == null)
         {
             goldMine = FindObjectOfType<Mine>();
             if (goldMine)
             {
-                pathfinder.FindPath(gameObject, goldMine.gameObject);
                 fsm.SetState((int)States.goToMining);
             }
             else
@@ -186,5 +166,112 @@ public class Miner : MonoBehaviour
             }
         }
     }
+
+    //public void LookForMines()
+    //{
+    //    goldMine = FindObjectOfType<Mine>();
+
+    //    if (goldDeposit > 0)
+    //    {
+    //        seeker.FindPath(gameObject, deposit.gameObject);
+    //        fsm.SetState((int)States.goToHome);
+    //        //rb.velocity = Vector2.zero;
+    //    }
+
+    //    if (goldMine != null)
+    //    {
+    //        seeker.FindPath(gameObject, goldMine.gameObject);
+    //        fsm.SetState((int)States.goToMining);
+    //        //rb.velocity = Vector2.zero;
+    //    }
+
+    //    Debug.Log(gameObject.name + " is Iddle");
+    //}
+
+    //private void GoToMine()
+    //{
+    //    if (goldMine == null)
+    //    {
+    //        Debug.Log(gameObject.name + ": My mine was destroyed!");
+    //        fsm.SetState((int)States.idle);
+    //        //rb.velocity = Vector2.zero;
+    //    }
+    //    else
+    //    {
+    //        if (goldMine != null)
+    //        {
+    //            if (seeker.Move(timer))
+    //                timer = 0;
+    //            /*
+    //            Vector2 direction = new Vector2((goldMine.gameObject.transform.position - transform.position).x, (goldMine.gameObject.transform.position - transform.position).y);
+    //            direction.Normalize();
+    //            rb.velocity = new Vector2((direction.x * speed * Time.deltaTime), (direction.y * speed * Time.deltaTime));
+    //            */
+
+    //            if (goldMine != null && transform.position == seeker.target.transform.position/*Vector2.Distance(goldMine.gameObject.transform.position, transform.position) < 0.1f*/)
+    //            {
+    //                fsm.SetState((int)States.minning);
+    //                //rb.velocity = Vector2.zero;
+    //            }
+    //        }
+    //    }
+    //}
+
+    //private void Mining()
+    //{
+    //    if (goldMine.gold > 0)
+    //    {
+    //        goldMine.gold--;
+    //        goldDeposit++;
+    //    }
+
+    //    if (goldDeposit == maxGoldCapacity || goldMine == null)
+    //    {
+    //        seeker.FindPath(gameObject, deposit.gameObject);
+    //        fsm.SetState((int)States.goToHome);
+    //    }
+    //}
+
+    //private void GoToHome()
+    //{
+    //    if (seeker.Move(timer))
+    //        timer = 0;
+
+    //    /*
+    //    Vector2 direction = new Vector2((deposit.transform.position - transform.position).x, (deposit.transform.position - transform.position).y);
+    //    direction.Normalize();
+    //    rb.velocity = new Vector2((direction.x * speed * Time.deltaTime), (direction.y * speed * Time.deltaTime));*/
+    //    if (transform.position == seeker.target.transform.position/*Vector2.Distance(deposit.transform.position, transform.position) < 0.1f*/)
+    //    {
+    //        fsm.SetState((int)States.deposit);
+    //        //rb.velocity = Vector2.zero;
+    //    }
+    //}
+
+    //private void Deposit()
+    //{
+    //    deposit.acumulatedGold++;
+    //    goldDeposit--;
+    //    if (goldDeposit == 0)
+    //    {
+    //        if (goldMine != null)
+    //            seeker.FindPath(gameObject, goldMine.gameObject);
+
+    //        fsm.SetState((int)States.goToMining);
+    //    }
+    //    if (goldMine == null)
+    //    {
+    //        goldMine = FindObjectOfType<Mine>();
+    //        if (goldMine)
+    //        {
+    //            seeker.FindPath(gameObject, goldMine.gameObject);
+    //            fsm.SetState((int)States.goToMining);
+    //        }
+    //        else
+    //        {
+    //            fsm.SetState((int)States.idle);
+    //        }
+    //    }
+    //}
 
 }
