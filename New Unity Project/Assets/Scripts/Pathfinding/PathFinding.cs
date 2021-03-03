@@ -101,10 +101,14 @@ public class PathFinding
             openNodes[i].RestartNode();
         }
 
+        openNodes.Clear();
+
         for (int i = 0; i < closedNodes.Count; i++)
         {
             closedNodes[i].RestartNode();
         }
+
+        closedNodes.Clear();
     }
     private List<Node> GeneratePath(List<Node> list, Node n)
     {
