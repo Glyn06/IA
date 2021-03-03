@@ -715,7 +715,7 @@ MonoBehaviour:
   density: 1
   drawGizmos: 1
   drawIndex: 0
-  drawWeight: 1
+  drawWeight: 0
   nodes:
   - adjacentsIndex: 0100000028000000
     position: {x: 0, y: 0}
@@ -13519,12 +13519,12 @@ MonoBehaviour:
     totalWeight: 0
   obstacleColliders: []
   nodeColors:
-    obstacleNodeColor: {r: 1, g: 0, b: 0, a: 0}
-    zeroConectionNodeColor: {r: 1, g: 1, b: 1, a: 0}
-    oneConectionNodeColor: {r: 0, g: 1, b: 0.11285329, a: 0}
-    twoConectionNodeColor: {r: 0.9833, g: 1, b: 0, a: 0}
-    threeConectionNodeColor: {r: 1, g: 0, b: 0.8345995, a: 0}
-    fourConectionNodeColor: {r: 0, g: 0.023825645, b: 1, a: 0}
+    obstacleNodeColor: {r: 1, g: 0, b: 0, a: 1}
+    zeroConectionNodeColor: {r: 1, g: 1, b: 1, a: 1}
+    oneConectionNodeColor: {r: 0, g: 1, b: 0.11285329, a: 1}
+    twoConectionNodeColor: {r: 0.9833, g: 1, b: 0, a: 1}
+    threeConectionNodeColor: {r: 1, g: 0, b: 0.8345995, a: 1}
+    fourConectionNodeColor: {r: 0, g: 0.023825645, b: 1, a: 1}
   weightSelection:
     selectionColor: {r: 1, g: 0.54443157, b: 0, a: 0}
     selection:
