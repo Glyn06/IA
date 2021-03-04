@@ -23,12 +23,11 @@ public class MinerBT : MonoBehaviour
 
         n_LookForMines lookForMines = new n_LookForMines(seeker, this);
         n_Move move = new n_Move(seeker);
-        n_CheckMaxCapacity checkMaxCapacity = new n_CheckMaxCapacity(this);
         n_Mine mine = new n_Mine(this);
         n_LookForHome lookForHome = new n_LookForHome(seeker, this);
         n_Deposit deposit = new n_Deposit(this);
 
-        Sequence GoToMineSequence = new Sequence(new List<NodeBT> { lookForMines, move, checkMaxCapacity, mine });
+        Sequence GoToMineSequence = new Sequence(new List<NodeBT> { lookForMines, move, mine });
         Sequence GoHomeSequence = new Sequence(new List<NodeBT> { lookForHome, move, deposit });
 
         main = new Selector(new List<NodeBT> { GoToMineSequence, GoHomeSequence });
