@@ -2,26 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Sequence : NodeWithChildren {
-    public override void OnExecute()
+public class Sequence : NodeBT
+{
+    protected List<NodeBT> nodes = new List<NodeBT>();
+
+    public Sequence(List<NodeBT> _nodes)
     {
-        for (int i = 0; i < children.Count; i++)
+        nodes = _nodes;
+    }
+
+    public override NodeState Evaluate()
+    {
+        bool isAnyNodeRunning = false;
+
+        foreach (var node in nodes)
         {
-            children[i].OnExecute();
-
-            while (children[i].state == NodeState.Running)
+            switch (node.Evaluate())
             {
-                children[i].OnExecute();
-            }
-
-            if (children[i].state == NodeState.Ok)
-                i++;
-
-            if (i == children.Count)
-            {
-                i = 0;
-                state = children[i].state;
+                case NodeState.Running:
+                    isAnyNodeRunning = true;
+                    node.Evaluate();
+                    break;
+                case NodeState.Ok:
+                    break;
+                case NodeState.Fail:
+                    state = NodeState.Fail;
+                    return state;
+                default:
+                    break;
             }
         }
+        state = isAnyNodeRunning ? NodeState.Running : NodeState.Ok;
+        return state;
     }
 }

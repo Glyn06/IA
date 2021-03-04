@@ -45,4 +45,11 @@ public class Seeker : MonoBehaviour
 
         return false;
     }
+    public bool Move()
+    {
+        transform.position = path[currentPosition];
+        currentPosition++;
+
+        return true;
+    }
 }

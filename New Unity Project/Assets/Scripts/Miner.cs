@@ -78,8 +78,6 @@ public class Miner : MonoBehaviour
             default:
                 break;
         }
-
-        Debug.Log(fsm.GetState());
     }
 
     public void LookForMines()

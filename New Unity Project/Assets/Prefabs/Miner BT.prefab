@@ -20,11 +20,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4025175891878198}
   - component: {fileID: 212270192921491488}
-  - component: {fileID: 114629415548938678}
+  - component: {fileID: 114028492809398238}
   - component: {fileID: 114709136190520100}
   - component: {fileID: 50963988773055766}
   m_Layer: 0
-  m_Name: Miner
+  m_Name: Miner BT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,7 +63,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &114629415548938678
+--- !u!114 &114028492809398238
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,11 +71,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1034898520204672}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 163349b0971e50f4b8e0c94cdc805f19, type: 3}
+  m_Script: {fileID: 11500000, guid: 75667b921f5e2c6449a016ec50fea2d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deposit: {fileID: 0}
-  speed: 250
+  home: {fileID: 0}
   maxGoldCapacity: 10
 --- !u!114 &114709136190520100
 MonoBehaviour:

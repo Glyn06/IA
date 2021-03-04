@@ -89,7 +89,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   path: []
-  delay: 0.1
+  delay: 0.001
   pathType: 3
 --- !u!212 &212270192921491488
 SpriteRenderer:

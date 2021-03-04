@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject home, goldMinePrefab;
     public Miner minerPrefab;
+    public MinerBT minerPrefabBT;
     public int goldMineCount = 3;
 
     private int minerCount = 0;
@@ -18,6 +19,15 @@ public class GameManager : MonoBehaviour
         newGO.name = "Miner " + minerCount;
 
         newGO.deposit = home.GetComponent<GoldDeposit>();
+    }
+
+    public void SpawnMinerBT()
+    {
+        MinerBT newGO = Instantiate(minerPrefabBT, home.transform.position, Quaternion.identity, null);
+        minerCount++;
+        newGO.name = "Miner " + minerCount;
+
+        newGO.home = home.GetComponent<GoldDeposit>();
     }
 
     public void SpawnMines()

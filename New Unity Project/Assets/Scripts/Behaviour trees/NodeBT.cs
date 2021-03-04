@@ -9,11 +9,12 @@ public enum NodeState
     Fail
 }
 
-public class NodeBT : MonoBehaviour
+[System.Serializable]
+public abstract class NodeBT
 {
-    public NodeState state;
+    protected NodeState state;
 
-    public virtual void OnStart() { }
-    public virtual void OnExecute(){ }
-    public virtual void OnStop() { }
+    public abstract NodeState Evaluate();
+
+    public NodeState GetState() { return state; }
 }
